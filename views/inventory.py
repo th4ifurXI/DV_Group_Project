@@ -2,7 +2,7 @@ import plotly.express as px
 import streamlit as st
 
 from core.data import reorder_table
-from core.style import CRITICAL, GOOD, MUTED, SERIES, SERIOUS, STATUS_ICON, bar_style, insight, rm
+from core.style import STATUS_COLOUR, STATUS_ICON, insight, money_axis, plot, rm, rm_short
 
 
 def render():
@@ -54,18 +54,19 @@ def render():
         insight(f"<b>{len(now)} products</b> will run out before the next delivery. "
                 f"Call <b>{by_sup.index[0]}</b> first ({by_sup.iloc[0]} items).")
 
-    # where cash is tied up
+    # where cash is tied up - no red + green pair (L2 #2): OK is neutral grey
     cap = t.groupby("status", as_index=False).stock_value_rm.sum()
     cap = cap.set_index("status").reindex(order).dropna().reset_index()
-    colour = {"Reorder now": CRITICAL, "Reorder soon": SERIOUS, "OK": GOOD, "Overstock": SERIES[0],
-              "No recent sales": MUTED}
     cap["label"] = cap.status.map(STATUS_ICON)
-    fig = px.bar(cap, x="stock_value_rm", y="label", orientation="h", title="Stock value at cost by status (RM)",
-                 labels={"stock_value_rm": "", "label": ""})
-    fig.update_traces(marker_color=[colour[k] for k in cap.status],
+    fig = px.bar(cap, x="stock_value_rm", y="label", orientation="h", title="Stock value at cost by status",
+                 labels={"stock_value_rm": "Stock value at cost", "label": ""},
+                 text=[rm_short(v) for v in cap.stock_value_rm])
+    fig.update_traces(marker_color=[STATUS_COLOUR[k] for k in cap.status], textposition="outside", cliponaxis=False,
                       hovertemplate="%{y}<br>RM%{x:,.0f}<extra></extra>")
-    fig.update_layout(height=300, yaxis_categoryorder="array", yaxis_categoryarray=cap.label[::-1].tolist())
-    st.plotly_chart(bar_style(fig), width="stretch")
+    fig.update_layout(height=320, yaxis_categoryorder="array", yaxis_categoryarray=cap.label[::-1].tolist(),
+                      xaxis_range=[0, cap.stock_value_rm.max() * 1.18])
+    money_axis(fig, "x")
+    plot(fig)
     idle = cap[cap.status.isin(["Overstock", "No recent sales"])].stock_value_rm.sum()
     insight(f"{rm(idle)} of cash is sitting in overstocked or non-selling items. "
             "Pause reorders on these and run a clearance promotion.")

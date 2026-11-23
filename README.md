@@ -24,14 +24,27 @@ To rebuild the dataset (same seed = same data): `python data_generation/generate
 | Page | Manager's question | Main visuals |
 |---|---|---|
 | Executive Overview | How is the business doing? | KPI tiles with % change, revenue trend with festive bands, revenue by category, payment-method mix |
-| Product Performance | What should we stock more / less of? | Top & bottom 10, Pareto curve, margin by category, slow-mover table |
-| Customer Insights | Who are our best customers, who are we losing? | Rule-based RFM segments, downloadable customer lists, spend heatmap by shopper type, cohort retention |
-| Seasonality & Timing | When to prepare stock and staff? | Weekday x hour heatmap, daily trend with festive and semester-break bands, Ramadan category change |
+| Product Performance | What should we stock more / less of? | Top & bottom 10, revenue x margin x units bubble chart, Pareto curve, margin by category, slow movers |
+| Customer Insights | Who are our best customers, who are we losing? | Clickable RFM segments linked to a customer list, spend heatmap by shopper type, cohort retention |
+| Customer Map | Where do members live, and what do they buy? | Bubble map of member revenue by area, linked area bar chart, area vs all category comparison |
+| Seasonality & Timing | When to prepare stock and staff? | Weekday x hour heatmap, daily trend with festive and semester-break bands, Ramadan category change, small multiples by category |
 | Returns & Losses | Where are we losing money? | Refunds per month, refunds by reason, most-returned products |
 | Inventory Alerts | What do we reorder now? | Reorder-point table with status, what-if sliders, purchase list download, stock value by status |
 | About the Data | Where does the data come from? | Data note, cleaning log, data dictionary |
 
 No machine learning is used - all analysis is descriptive and rule-based.
+
+## How the dashboard applies TEB3133 concepts
+
+| Lecture | Concept | Where it is applied |
+|---|---|---|
+| L1 Introduction | Audience, goals, data types | Built for shop managers; each page answers one question |
+| L2 Design principles | 10 design standards | One orange highlight on light-blue context, no red + green, axis titles, direct value labels, horizontal bars (no angled text), zero baselines, RM100k / RM1.2M scales, no chartjunk, small multiples, source line under every chart |
+| L3 Audience | Key takeaway, pre-attentive attributes | 💡 takeaway under every chart; peak month, busiest hour and selected items drawn in orange |
+| L4 Linked views | Selection in one view updates others | Click a category (Overview), RFM segment (Customers), area (Map) or return reason (Returns); sidebar filters link every page |
+| L5 High-dimensional | Heatmaps, multivariate scatter, trellis | 3 heatmaps, revenue x margin x units x role bubble chart, small multiples of monthly revenue by category |
+| L6 Maps | Proportional symbols, title, legend, source | Customer Map page (needs internet for the map tiles) |
+| L7 Evaluation | Accuracy, usability, SUS | Cleaning log on About the Data for accuracy checks; usability plan in the report |
 
 ## Repository layout
 

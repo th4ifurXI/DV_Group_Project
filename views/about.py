@@ -19,6 +19,26 @@ def render():
     c[2].metric("Products", f"{len(D['products'])}")
     c[3].metric("Loyalty members", f"{len(D['customers']):,}")
 
+    st.subheader("How the dashboard applies TEB3133 concepts")
+    st.markdown("""
+| Lecture | Concept | Where it is applied |
+|---|---|---|
+| L1 Introduction | Audience, goal (explore + present), data types | Built for shop managers; each page answers one question; categorical, ordinal, time and geographic data |
+| L2 #1 Chart format | Web, interactive | Plotly charts with hover tooltips, zoom and CSV downloads |
+| L2 #2 Colour | Colour only when meaningful, high contrast, no red + green | One orange highlight on light-blue context; validated colour-blind-safe palette; inventory chart avoids red/green |
+| L2 #3-4 Text, labels, readability | Descriptive titles, axis titles, direct labels, no angled text | Value labels on small bar charts; horizontal bars for long names; 💡 takeaway under every chart |
+| L2 #5 Scales | Zero baseline for bars, natural increments, highest denomination | Bars start at 0; money axes show RM100k / RM1.2M |
+| L2 #6 Data integrity | Lie factor = 1, no 3D | Flat 2D marks only, log scale labelled on the product scatter |
+| L2 #7 Chartjunk | Remove non-data ink | No borders, shadows or backgrounds; light grey grid |
+| L2 #8-9 Density, richness | Small multiples on a common scale | Monthly revenue by category trellis (Seasonality); 13 categories grouped into 4 roles in the scatter |
+| L2 #10 Attribution | Source + author on every chart | Caption under every chart |
+| L3 Audience | Five questions, key takeaway, pre-attentive attributes | Takeaway callouts; peak month, busiest hour, selected segment drawn in orange |
+| L4 Linked views | Selection in one view updates others | Click a category (Overview), segment (Customers), area (Map) or return reason (Returns); sidebar filters link every page |
+| L5 High-dimensional | Heatmap, multivariate scatter, trellis | Weekday x hour, category x shopper type, cohort heatmaps; revenue x margin x units x role scatter; small multiples |
+| L6 Maps | Title, legend, source, proportional symbols for quantities | Customer Map: bubble map of member revenue by area, linked to a bar chart and category comparison |
+| L7 Evaluation | Accuracy, usability, SUS | Cleaning log below for accuracy checks; usability test plan in the report |
+""")
+
     st.subheader("Cleaning log")
     st.dataframe(D["log"], hide_index=True, width="stretch")
 

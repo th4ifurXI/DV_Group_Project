@@ -3,7 +3,8 @@ import plotly.express as px
 import streamlit as st
 
 from core.data import filter_frame
-from core.style import SEQ, SERIES, add_event_bands, bar_style, insight, rm
+from core.style import (CONTEXT, EVENT_TINT, HIGHLIGHT, PRIMARY, SEQ, SERIES, add_event_bands, highlight_colours,
+                        insight, money_axis, plot, rm_short)
 
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
@@ -30,34 +31,39 @@ def render():
         st.warning("No sales in this selection.")
         return
 
+    # L5 heatmap with the peak cell outlined (L3 pre-attentive)
     inv = s.drop_duplicates("invoice_no")
     n_days = inv.groupby("weekday").date.nunique()
     h = inv.groupby(["weekday", "hour"]).size().unstack(fill_value=0).reindex(DAYS)
     h = h.div(n_days.reindex(DAYS), axis=0)
+    peak, quiet = h.stack().idxmax(), h.stack().idxmin()
     fig = px.imshow(h, aspect="auto", color_continuous_scale=SEQ, text_auto=".0f",
-                    labels=dict(x="Hour of day", y="", color="Avg transactions"),
-                    title="Average transactions per hour")
+                    labels=dict(x="Hour of day", y="Day of week", color="Avg transactions"),
+                    title="Average transactions per hour (darker = busier; outlined = busiest slot)")
     fig.update_traces(hovertemplate="%{y} %{x}:00<br>%{z:.1f} transactions on average<extra></extra>")
-    fig.update_layout(height=380, coloraxis_showscale=False)
-    fig.update_xaxes(tickvals=list(h.columns), ticktext=[f"{x}:00" for x in h.columns])
-    st.plotly_chart(fig, width="stretch")
-    peak = h.stack().idxmax()
-    quiet = h.stack().idxmin()
+    cols = list(h.columns)
+    xi, yi = cols.index(peak[1]), DAYS.index(peak[0])
+    fig.add_shape(type="rect", x0=peak[1] - 0.5, x1=peak[1] + 0.5, y0=yi - 0.5, y1=yi + 0.5,
+                  line=dict(color=HIGHLIGHT, width=3))
+    fig.update_layout(height=400, coloraxis_showscale=False)
+    fig.update_xaxes(tickvals=cols, ticktext=[f"{x}:00" for x in cols])
+    plot(fig)
     insight(f"Busiest slot: <b>{peak[0]} {peak[1]}:00</b>. Quietest: {quiet[0]} {quiet[1]}:00. "
-            "Roster two cashiers for the evening peak and schedule restocking in the quiet morning slots.")
+            "Roster an extra cashier for the evening peak and restock in the quiet morning slots.")
 
     daily = s.groupby("date").line_total_rm.sum().reset_index()
     daily["7-day average"] = daily.line_total_rm.rolling(7, min_periods=1).mean()
-    fig = px.line(daily, x="date", y="7-day average", title="Daily revenue, 7-day average (RM)",
-                  labels={"date": "", "7-day average": "Revenue (RM)"})
-    fig.update_traces(line_color=SERIES[0], line_width=2, hovertemplate="%{x|%d %b %Y}<br>RM%{y:,.0f} per day<extra></extra>")
+    fig = px.line(daily, x="date", y="7-day average", title="Daily revenue, 7-day average",
+                  labels={"date": "Date", "7-day average": "Revenue per day"})
+    fig.update_traces(line_color=PRIMARY, line_width=2, hovertemplate="%{x|%d %b %Y}<br>RM%{y:,.0f} per day<extra></extra>")
     fig.update_layout(height=340, hovermode="x unified")
+    money_axis(fig, "y")
     add_event_bands(fig, cal, F["start"], F["end"])
     add_event_bands(fig, cal.assign(event=""), F["start"], F["end"], types=("Semester break",), min_days=1)
-    st.plotly_chart(fig, width="stretch")
+    plot(fig)
     st.caption("Shaded bands: festive seasons (Ramadan labelled) and UTP semester breaks (unlabelled).")
 
-    # period comparison
+    # period comparison + Ramadan category change
     daily["period"] = "Normal day"
     daily.loc[in_events(daily.date, cal, etype="Semester break"), "period"] = "UTP semester break"
     daily.loc[in_events(daily.date, cal, name="Ramadan"), "period"] = "Ramadan"
@@ -66,15 +72,18 @@ def render():
         ["Normal day", "Ramadan", "Hari Raya week", "UTP semester break"]).dropna().reset_index()
     base = comp.set_index("period").line_total_rm.get("Normal day")
     a, b = st.columns(2)
-    fig = px.bar(comp, x="period", y="line_total_rm", title="Average revenue per day by period (RM)",
-                 labels={"period": "", "line_total_rm": ""})
-    fig.update_traces(marker_color=SERIES[0], hovertemplate="%{x}<br>RM%{y:,.0f} per day<extra></extra>")
-    fig.update_layout(height=360)
-    a.plotly_chart(bar_style(fig), width="stretch")
+    fig = px.bar(comp, x="period", y="line_total_rm", title="Average revenue per day by period",
+                 labels={"period": "Period", "line_total_rm": "Revenue per day"},
+                 text=[rm_short(v) for v in comp.line_total_rm])
+    fig.update_traces(marker_color=highlight_colours(comp.period, "Ramadan"), textposition="outside", cliponaxis=False,
+                      hovertemplate="%{x}<br>RM%{y:,.0f} per day<extra></extra>")
+    fig.update_layout(height=380, yaxis_range=[0, comp.line_total_rm.max() * 1.18])
+    money_axis(fig, "y")
+    plot(fig, a)
 
-    # which categories move during Ramadan
     sd = s.copy()
     sd["is_ramadan"] = in_events(sd.date, cal, name="Ramadan")
+    msg = ""
     if sd.is_ramadan.any() and (~sd.is_ramadan).any():
         nd = sd.groupby("is_ramadan").date.nunique()
         cr = sd.groupby(["category", "is_ramadan"]).line_total_rm.sum().unstack(fill_value=0)
@@ -82,20 +91,43 @@ def render():
         cr["lift"] = cr[True] / cr[False] - 1
         cr = cr.drop(index="Festive & Seasonal", errors="ignore").sort_values("lift").reset_index()
         fig = px.bar(cr, x="lift", y="category", orientation="h", title="Daily sales change during Ramadan vs other days",
-                     labels={"lift": "", "category": ""})
-        fig.update_traces(marker_color=[SERIES[1] if v > 0 else SERIES[0] for v in cr.lift],
-                          hovertemplate="%{y}<br>%{x:+.0%}<extra></extra>")
-        fig.update_layout(height=360, xaxis_tickformat="+.0%")
-        b.plotly_chart(bar_style(fig), width="stretch")
+                     labels={"lift": "Change in daily sales", "category": ""}, text=[f"{v:+.0%}" for v in cr.lift])
+        # diverging: orange = sells more, blue = sells less (polarity, not identity)
+        fig.update_traces(marker_color=[HIGHLIGHT if v > 0 else PRIMARY for v in cr.lift], textposition="outside",
+                          cliponaxis=False, hovertemplate="%{y}<br>%{x:+.0%}<extra></extra>")
+        lim = cr.lift.abs().max() * 1.3
+        fig.update_layout(height=380, xaxis_tickformat="+.0%", xaxis_range=[-lim, lim])
+        plot(fig, b)
         up = cr.iloc[-1]
         msg = (f"During Ramadan, <b>{up.category}</b> sells {up.lift:+.0%} per day vs other days "
-               "(festive items like kurma and kuih raya sell almost only in this window, so they are left out of the chart).")
+               "(festive items like kurma and kuih raya sell almost only in Ramadan, so they are left out).")
     else:
         b.info("Select a period that includes Ramadan to see which categories move.")
-        msg = ""
-    if base:
-        brk = comp.set_index("period").line_total_rm.get("UTP semester break")
-        if brk:
-            msg += f" During UTP semester breaks daily revenue is {brk / base - 1:+.0%} vs normal - order less student stock."
+    brk = comp.set_index("period").line_total_rm.get("UTP semester break")
+    if base and brk:
+        msg += f" During UTP semester breaks daily revenue is {brk / base - 1:+.0%} vs normal - order less student stock."
     if msg:
         insight(msg)
+
+    # L2 #9 / L5 trellis: small multiples on one shared scale
+    st.subheader("Monthly revenue by category (small multiples)")
+    mc = s.pivot_table(index="month", columns="category", values="line_total_rm", aggfunc="sum").fillna(0)
+    mc = mc.stack().rename("line_total_rm").reset_index()  # months with no sales count as RM0, not a gap
+    order = mc.groupby("category").line_total_rm.sum().sort_values(ascending=False).index.tolist()
+    fig = px.line(mc, x="month", y="line_total_rm", facet_col="category", facet_col_wrap=4,
+                  category_orders={"category": order}, facet_row_spacing=0.09, facet_col_spacing=0.04,
+                  labels={"month": "", "line_total_rm": "Revenue"},
+                  title="Same scale in every panel so categories can be compared directly")
+    fig.update_traces(line_color=PRIMARY, line_width=1.8,
+                      hovertemplate="%{x|%b %Y}<br>RM%{y:,.0f}<extra></extra>")
+    fig.for_each_annotation(lambda an: an.update(text=an.text.split("=")[-1], font=dict(size=12)))
+    fig.update_yaxes(tickprefix="RM", tickformat="~s", title_text="")
+    fig.update_xaxes(tickformat="%b %y", nticks=4, title_text="")
+    for _, e in cal[cal.event == "Ramadan"].iterrows():
+        if e.end_date >= F["start"] and e.start_date <= F["end"]:
+            fig.add_vrect(x0=e.start_date, x1=e.end_date, fillcolor=EVENT_TINT, line_width=0, layer="below",
+                          row="all", col="all")
+    fig.update_layout(height=760)
+    plot(fig)
+    insight("Each panel is one category on the same RM scale (shaded = Ramadan). Staples like rice stay flat and high, "
+            "while festive items spike only around Ramadan - order them just in time.")

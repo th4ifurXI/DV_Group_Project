@@ -7,7 +7,7 @@ import pandas as pd
 import streamlit as st
 
 from core.data import load
-from views import about, customers, inventory, overview, products, returns, seasonality
+from views import about, customers, geography, inventory, overview, products, returns, seasonality
 
 st.set_page_config(page_title="Mini Market Seri Iskandar (simulated)", page_icon="🛒", layout="wide")
 
@@ -53,6 +53,7 @@ pages = [
     st.Page(overview.render, title="Executive Overview", icon="📊", url_path="overview", default=True),
     st.Page(products.render, title="Product Performance", icon="📦", url_path="products"),
     st.Page(customers.render, title="Customer Insights", icon="👥", url_path="customers"),
+    st.Page(geography.render, title="Customer Map", icon="🗺️", url_path="map"),
     st.Page(seasonality.render, title="Seasonality & Timing", icon="📅", url_path="seasonality"),
     st.Page(returns.render, title="Returns & Losses", icon="↩️", url_path="returns"),
     st.Page(inventory.render, title="Inventory Alerts", icon="🚨", url_path="inventory"),
