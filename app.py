@@ -1,5 +1,5 @@
 """
-Kedai Runcit Sales & Inventory Decision Dashboard
+Mini Market Seri Iskandar (simulated) - Sales & Inventory Dashboard
 Run:  streamlit run app.py
 """
 
@@ -9,12 +9,12 @@ import streamlit as st
 from core.data import load
 from views import about, customers, inventory, overview, products, returns, seasonality
 
-st.set_page_config(page_title="Kedai Runcit Dashboard", page_icon="🛒", layout="wide")
+st.set_page_config(page_title="Mini Market Seri Iskandar (simulated)", page_icon="🛒", layout="wide")
 
 # ---------------- data ----------------
 with st.sidebar:
-    st.markdown("### 🛒 Kedai Runcit Dashboard")
-    st.caption("Sales & inventory decisions for a Seri Iskandar mini-market (simulated data)")
+    st.markdown("### 🛒 Mini Market Seri Iskandar")
+    st.caption("Sales & Inventory Dashboard · simulated data")
     with st.expander("Use your own POS export"):
         up = st.file_uploader("transactions.csv (same columns as the sample)", type="csv")
 
@@ -58,4 +58,5 @@ pages = [
     st.Page(inventory.render, title="Inventory Alerts", icon="🚨", url_path="inventory"),
     st.Page(about.render, title="About the Data", icon="ℹ️", url_path="about"),
 ]
+st.caption("🛒 MINI MARKET SERI ISKANDAR (SIMULATED) · SALES & INVENTORY DASHBOARD")
 st.navigation(pages, position="sidebar").run()

@@ -1,4 +1,4 @@
-# Kedai Runcit Sales & Inventory Decision Dashboard
+# Mini Market Seri Iskandar (simulated) - Sales & Inventory Dashboard
 
 Data Visualization (TEB3133) group project - a Streamlit dashboard that helps the manager of a small
 Malaysian mini-market decide what to stock, who to retain and when to reorder.
