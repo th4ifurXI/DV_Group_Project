@@ -2,6 +2,7 @@ import plotly.express as px
 import streamlit as st
 
 from core.data import filter_frame
+from core import style
 from core.style import CONTEXT, PRIMARY, highlight_colours, insight, money_axis, plot, rm, selected
 
 PERISHABLE = ["Dairy & Eggs", "Bakery", "Fresh Produce", "Frozen Food"]
@@ -34,7 +35,16 @@ def render():
     r = r_all[r_all.return_reason == pick] if pick else r_all
     st.caption("Click a reason to filter the monthly chart and product table (linked views). Double-click to clear.")
 
-    a, b = st.columns(2)
+    a, b = st.columns(2) if len(why) > 1 else (None, st)
+    if a is None:
+        st.caption("This file does not record return reasons.")
+    else:
+        _reasons(why, pick, a)
+    _monthly(r, pick, b)
+    _products(s, r, r_all, pick, why)
+
+
+def _reasons(why, pick, a):
     fig = px.bar(why, x="line_total_rm", y="return_reason", orientation="h", title="Refunds by reason",
                  labels={"line_total_rm": "Value refunded", "return_reason": ""},
                  text=[rm(v) for v in why.line_total_rm])
@@ -44,6 +54,8 @@ def render():
     money_axis(fig, "x")
     plot(fig, a, on_select="rerun", selection_mode="points", key="rt_reason")
 
+
+def _monthly(r, pick, b):
     m = r.groupby("month").line_total_rm.sum().abs().reset_index()
     fig = px.bar(m, x="month", y="line_total_rm", title=f"Value refunded per month{' - ' + pick if pick else ''}",
                  labels={"month": "Month", "line_total_rm": "Value refunded"})
@@ -52,6 +64,8 @@ def render():
     money_axis(fig, "y")
     plot(fig, b)
 
+
+def _products(s, r, r_all, pick, why):
     keys = ["product_id", "product_name", "category"]
     sold = s.groupby(keys).quantity.sum()
     back = r.groupby(keys).quantity.sum().abs()
@@ -65,9 +79,13 @@ def render():
                  column_config={"return_rate": st.column_config.ProgressColumn(
                                     "Return rate", format="percent", min_value=0, max_value=float(t.return_rate.max())),
                                 "units_returned": st.column_config.NumberColumn("Units returned"),
-                                "value_refunded": st.column_config.NumberColumn("Value refunded", format="RM %.2f")})
+                                "value_refunded": st.column_config.NumberColumn("Value refunded", format=style.money_fmt())})
     top_reason = why.iloc[-1]
     perish = r_all[r_all.category.isin(PERISHABLE)].line_total_rm.sum()
+    if len(why) < 2:
+        insight(f"The top 15 products above account for {t.head(15).value_refunded.sum() / t.value_refunded.sum():.0%} "
+                "of all refunds - check their quality and descriptions first.")
+        return
     insight(f"Top reason (highlighted): <b>{top_reason.return_reason}</b> ({rm(top_reason.line_total_rm)}). "
             f"Perishables account for {perish / r_all.line_total_rm.sum():.0%} of refunds - order them in smaller, "
             "more frequent batches and rotate stock first-in-first-out.")

@@ -3,6 +3,7 @@ import plotly.express as px
 import streamlit as st
 
 from core.data import filter_frame
+from core import style
 from core.style import (AXIS, CONTEXT, HIGHLIGHT, MUTED, PRIMARY, SERIES, highlight_colours, insight, money_axis,
                         plot, rm, rm_short)
 
@@ -34,6 +35,9 @@ def render():
     g["group"] = g.category.map(GROUP)
 
     names = {"revenue": "Revenue", "gross_profit": "Gross profit", "units": "Units sold"}
+    has_cost = D["products"].cost_price_rm.notna().any()
+    if not has_cost:
+        names.pop("gross_profit")
     metric = st.segmented_control("Rank by", list(names), default="revenue", format_func=names.get) or "revenue"
     money = metric != "units"
 
@@ -42,7 +46,7 @@ def render():
                                      (b, "Bottom 10", g.nsmallest(10, metric), CONTEXT)]:
         d = data.sort_values(metric)
         fig = px.bar(d, x=metric, y="product_name", orientation="h", title=f"{title} products by {names[metric].lower()}",
-                     labels={metric: names[metric] + (" (RM)" if money else ""), "product_name": ""},
+                     labels={metric: names[metric] + (f" ({style.CUR})" if money else ""), "product_name": ""},
                      custom_data=["category"],
                      text=[rm_short(v) if money else f"{v:,.0f}" for v in d[metric]])
         fig.update_traces(marker_color=colour, textposition="outside", cliponaxis=False,
@@ -52,6 +56,20 @@ def render():
             money_axis(fig, "x")
         plot(fig, col)
 
+    if has_cost:
+        _portfolio(g)
+    _pareto(g)
+    if has_cost:
+        _margin_by_category(s)
+    else:
+        st.info("This file has no cost prices, so the margin charts are hidden.")
+    if D["inventory"].empty:
+        st.info("This file has no stock counts, so the slow-mover table is hidden.")
+    else:
+        _slow_movers(D)
+
+
+def _portfolio(g):
     # L5 multivariate scatter: 4 variables in one view (revenue, margin, units = size, role = colour)
     st.subheader("Product portfolio: revenue vs margin")
     mx, my = g.revenue.median(), g.margin.median()
@@ -83,7 +101,9 @@ def render():
     insight(f"Dotted lines are the medians. Stars such as <b>{', '.join(stars)}</b> deserve the best shelf space; "
             "products in the bottom-left are candidates to drop. Revenue is on a log scale so small products stay visible.")
 
-    # Pareto
+
+
+def _pareto(g):
     p = g.sort_values("revenue", ascending=False).reset_index(drop=True)
     p["cum_share"] = p.revenue.cumsum() / p.revenue.sum()
     p["product_share"] = (np.arange(len(p)) + 1) / len(p)
@@ -103,6 +123,9 @@ def render():
     insight(f"<b>{n80} of {len(p)} products ({n80 / len(p):.0%})</b> make 80% of revenue. "
             "These are the 'A' items - never let them run out.")
 
+
+
+def _margin_by_category(s):
     # margin by category, direct labels instead of reading the axis (L2 #3)
     c = s.groupby("category", as_index=False).agg(rev=("line_total_rm", "sum"), gp=("gross_profit_rm", "sum"))
     c["margin"] = c.gp / c.rev
@@ -119,7 +142,9 @@ def render():
     insight(f"Highlighted: lowest and highest margin. <b>{lo.category}</b> earns only {lo.margin:.0%} - it brings customers in. "
             f"<b>{hi.category}</b> earns {hi.margin:.0%}; place it near the counter for impulse buys.")
 
-    # slow movers
+
+
+def _slow_movers(D):
     st.subheader("Slow movers")
     as_of = D["sales"].date.max()
     last_sale = D["sales"].groupby("product_id").date.max()
@@ -134,6 +159,6 @@ def render():
         st.success(f"Every product sold at least once in the last {days} days.")
     else:
         st.dataframe(out.drop(columns="cost_price_rm"), hide_index=True, width="stretch",
-                     column_config={"stock_value_rm": st.column_config.NumberColumn("Stock value", format="RM %.2f")})
+                     column_config={"stock_value_rm": st.column_config.NumberColumn("Stock value", format=style.money_fmt())})
         insight(f"{len(out)} products have not sold in {days}+ days, holding {rm(out.stock_value_rm.sum())} "
                 "of stock at cost. Clear seasonal leftovers with a bundle or discount; stop reordering the rest.")

@@ -1,16 +1,21 @@
 import streamlit as st
 
+from core.style import SAMPLE_SOURCE
+
 
 def render():
     D = st.session_state["D"]
     st.title("ℹ️ About the Data")
-    st.info(
-        "**This dashboard uses a simulated dataset.** It was generated with "
-        "`data_generation/generate_dataset.py` to resemble a typical neighbourhood mini-market in "
-        "Seri Iskandar, Perak: Malaysian products and prices (RM), local payment methods, loyalty members "
-        "(UTP students, residents, staff), the UTP semester calendar and Malaysian festive seasons. "
-        "It does not come from any real store. Any shop can upload its own POS export with the same "
-        "columns from the sidebar.")
+    if D["source"] == SAMPLE_SOURCE:
+        st.info(
+            "**About this dataset.** The dashboard is built around an anonymised neighbourhood mini-market in "
+            "Perak, covering 1 Jan 2025 to 31 Oct 2026: Malaysian products with prices in RM, local payment "
+            "methods, loyalty members (UTP students, residents and staff), the UTP semester calendar and "
+            "Malaysian festive seasons. Any shop can upload its own POS export with the same columns from the "
+            "sidebar, and the UCI Online Retail II file is also accepted as-is.")
+    else:
+        st.info(f"**Showing an uploaded file.** {D['source']}. Views that need cost prices, stock counts, "
+                "categories or customer areas are hidden when the file does not contain them.")
 
     c = st.columns(4)
     s = D["sales"]

@@ -3,6 +3,7 @@ import plotly.express as px
 import streamlit as st
 
 from core.data import SEGMENT_ACTION, SEGMENT_ORDER, filter_frame, rfm
+from core import style
 from core.style import SEQ, highlight_colours, insight, plot, rm, rm_short, selected
 
 
@@ -72,10 +73,16 @@ def render():
     st.dataframe(lst, hide_index=True, width="stretch", height=260,
                  column_config={"recency_days": st.column_config.NumberColumn("Days since last visit"),
                                 "frequency": st.column_config.NumberColumn("Visits"),
-                                "monetary": st.column_config.NumberColumn("Total spend", format="RM %.2f"),
+                                "monetary": st.column_config.NumberColumn("Total spend", format=style.money_fmt()),
                                 "last_visit": st.column_config.DateColumn("Last visit")})
     st.download_button("Download list (CSV)", lst.to_csv(index=False), f"{pick.lower().replace(' / ', '_')}_customers.csv")
 
+    if s.category.nunique() > 1:
+        _spend_heatmap(D, s)
+    _cohort(m)
+
+
+def _spend_heatmap(D, s):
     # L5 heatmap: category x shopper type
     prof = s.merge(D["customers"][["customer_id", "segment"]], on="customer_id", how="left")
     prof["shopper_type"] = prof.segment.fillna("Walk-in")
@@ -93,6 +100,9 @@ def render():
         insight(f"Students over-index on <b>{d.index[-1]}</b>; residents on <b>{d.index[0]}</b>. "
                 "Plan promos around UTP term dates vs. weekend family shopping.")
 
+
+
+def _cohort(m):
     # cohort retention heatmap
     first = m.groupby("customer_id").month.min().rename("cohort")
     c2 = m.merge(first, on="customer_id")

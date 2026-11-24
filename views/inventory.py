@@ -2,12 +2,16 @@ import plotly.express as px
 import streamlit as st
 
 from core.data import reorder_table
+from core import style
 from core.style import STATUS_COLOUR, STATUS_ICON, insight, money_axis, plot, rm, rm_short
 
 
 def render():
     D = st.session_state["D"]
     st.title("🚨 Inventory Alerts")
+    if D["inventory"].empty:
+        st.info("This file has no stock counts or supplier lead times, so reorder alerts cannot be calculated.")
+        return
     as_of = D["sales"].date.max()
     st.caption(f"What do we need to reorder now? Based on stock count on {as_of:%d %b %Y} "
                "(not affected by the date filter).")
@@ -43,7 +47,7 @@ def render():
                      "days_of_cover": st.column_config.NumberColumn("Days of cover", format="%.1f"),
                      "lead_time_days": st.column_config.NumberColumn("Lead time (days)"),
                      "suggested_order_qty": st.column_config.NumberColumn("Suggested order"),
-                     "stock_value_rm": st.column_config.NumberColumn("Stock value", format="RM %.2f")})
+                     "stock_value_rm": st.column_config.NumberColumn("Stock value", format=style.money_fmt())})
     st.download_button("Download purchase list (CSV)",
                        view[view.status.str.contains("Reorder")][["product_name", "supplier", "suggested_order_qty"]]
                        .to_csv(index=False), "purchase_list.csv")

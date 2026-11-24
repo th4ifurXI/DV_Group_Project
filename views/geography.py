@@ -35,6 +35,9 @@ def render():
     g["spend_per_member"] = g.revenue / g.members
     g["share"] = g.revenue / g.revenue.sum()
     g = AREAS.merge(g, on="area", how="inner")
+    if g.empty:
+        st.info("The customers in this file are not from the mapped areas around the store, so the map is hidden.")
+        return
 
     # L4 linked views: the area chosen in the bar chart is highlighted on the map and drives the category comparison
     pick = selected("geo_area") or g.loc[g.revenue.idxmax(), "area"]
@@ -57,7 +60,7 @@ def render():
                                     "<br>RM%{customdata[2]:,.0f} per member<extra></extra>")
     fig.add_scattermap(lat=[STORE[0]], lon=[STORE[1]], mode="markers+text", text=["🛒 Store"],
                        textposition="bottom center", marker=dict(size=11, color="#0b0b0b"), name="Store",
-                       hoverinfo="text", hovertext=["Mini Market Seri Iskandar (simulated location)"])
+                       hoverinfo="text", hovertext=["The store (approximate location)"])
     fig.update_layout(height=520, margin=dict(l=0, r=0, t=48, b=0),
                       legend=dict(orientation="h", yanchor="top", y=-0.02, x=0))
     plot(fig, left)

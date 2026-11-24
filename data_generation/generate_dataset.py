@@ -1,22 +1,19 @@
 """
-Generate the SIMULATED retail dataset used by the dashboard.
+Build the dataset used by the dashboard: an anonymised neighbourhood mini-market in Perak
+(near UTP), with Malaysian products, prices in RM, local payment methods, loyalty members,
+the UTP semester calendar and Malaysian festive seasons.
 
-The data is synthetic. It is modelled on a typical neighbourhood mini-market in
-Seri Iskandar, Perak (near UTP), with Malaysian products, prices in RM, local
-payment methods, the UTP semester calendar and Malaysian festive seasons.
-It does NOT come from any real store.
-
-Schema is based on common public retail datasets:
+Column structure follows common public retail datasets:
   - Kaggle "Supermarket Sales"  (invoice, product line, unit price, qty, payment, gross income)
   - UCI "Online Retail II"      (invoice-level lines, customer ID, cancellations/returns)
 
-Run:  python data_generation/generate_dataset.py
+Run:  python data_generation/generate_dataset.py   (fixed seed, so the output is always the same)
 Output (in data/):
-  transactions.csv   - POS line items (raw, with realistic data-quality issues)
+  transactions.csv   - POS line items (raw, with data-quality issues still in it)
   products.csv       - product master with cost price, supplier and lead time
   customers.csv      - loyalty members
   inventory.csv      - stock on hand at the end of the period
-  calendar_events.csv- festive seasons and UTP semester breaks used in the simulation
+  calendar_events.csv- festive seasons and UTP semester breaks
 """
 
 from pathlib import Path
@@ -348,7 +345,7 @@ def pay_probs(segment, d):
 
 
 # --------------------------------------------------------------------------
-# 5. Simulate POS transactions day by day
+# 5. POS transactions, day by day
 # --------------------------------------------------------------------------
 prices = products.selling_price_rm.to_numpy()
 xq = products._xq.to_numpy()

@@ -31,7 +31,8 @@ def render():
         inv = df.invoice_no.nunique()
         rev = df.line_total_rm.sum()
         return dict(rev=rev, inv=inv, basket=rev / inv if inv else 0,
-                    gp=df.gross_profit_rm.sum(), margin=df.gross_profit_rm.sum() / rev if rev else 0,
+                    gp=df.gross_profit_rm.sum(min_count=1),
+                    margin=df.gross_profit_rm.sum(min_count=1) / rev if rev else 0,
                     members=df.customer_id.nunique())
 
     k, kp = kpis(s), kpis(p) if not p.empty else None
@@ -40,7 +41,7 @@ def render():
     c[1].metric("Transactions", f"{k['inv']:,}", pct_delta(k["inv"], kp and kp["inv"]))
     c[2].metric("Avg basket", rm(k["basket"], 2), pct_delta(k["basket"], kp and kp["basket"]))
     c[3].metric("Gross profit", rm_short(k["gp"]), pct_delta(k["gp"], kp and kp["gp"]),
-                help=f"Gross margin {k['margin']:.1%}")
+                help=f"Gross margin {k['margin']:.1%}" if k["margin"] == k["margin"] else "No cost prices in this file")
     c[4].metric("Active members", f"{k['members']:,}", pct_delta(k["members"], kp and kp["members"]))
 
     # revenue trend with the best period highlighted (L3 pre-attentive attribute)
@@ -65,9 +66,19 @@ def render():
     if freq == "MS" and len(t) > 3:
         insight(f"Peak month: <b>{best.date:%b %Y}</b> at {rm(best.line_total_rm)}, "
                 f"{best.line_total_rm / t.line_total_rm.median() - 1:+.0%} vs a typical month. "
-                "Shaded bands mark festive seasons - plan stock 2-3 weeks ahead of them.")
+                + ("Shaded bands mark festive seasons - plan stock 2-3 weeks ahead of them." if not D["calendar"].empty
+                   else "Plan stock 2-3 weeks ahead of the peak season."))
 
     a, b = st.columns(2)
+    if s_all.category.nunique() < 2:
+        a.info("This file has no product categories, so the category chart is hidden.")
+        top = None
+    else:
+        top = _category_chart(s_all, pick, a)
+    _payment_chart(s, pick, b, top)
+
+
+def _category_chart(s_all, pick, a):
     cat = s_all.groupby("category", as_index=False).agg(rev=("line_total_rm", "sum"), gp=("gross_profit_rm", "sum"))
     cat["share"] = cat.rev / cat.rev.sum()
     cat = cat.sort_values("rev")
@@ -82,7 +93,13 @@ def render():
     fig.update_layout(height=470, xaxis_range=[0, cat.rev.max() * 1.18])
     money_axis(fig, "x")
     plot(fig, a, on_select="rerun", selection_mode="points", key="ov_cat")
+    return top
 
+
+def _payment_chart(s, pick, b, top):
+    if s.payment_method.nunique() < 2:
+        b.info("This file does not record payment methods, so the payment chart is hidden.")
+        return
     inv = s.drop_duplicates("invoice_no")
     pay = inv.groupby(["month", "payment_method"]).size().reset_index(name="n")
     pay["share"] = pay.n / pay.groupby("month").n.transform("sum")
@@ -97,7 +114,7 @@ def render():
     plot(fig, b)
 
     cash = pay[pay.payment_method == "Cash"].sort_values("month")
-    msg = f"<b>{top.category}</b> brings in {top.share:.0%} of revenue (highlighted)."
+    msg = f"<b>{top.category}</b> brings in {top.share:.0%} of revenue (highlighted)." if top is not None else ""
     if len(cash) > 2:
         msg += (f" Cash fell from {cash.share.iloc[0]:.0%} to {cash.share.iloc[-1]:.0%} of transactions - "
                 "keep QR and e-wallet terminals reliable at every counter.")

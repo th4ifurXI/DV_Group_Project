@@ -7,37 +7,93 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from core.style import SAMPLE_SOURCE
+
 DATA = Path(__file__).resolve().parents[1] / "data"
+# UCI Online Retail II (real UK online retailer, 2009-2011) - accepted as-is so the dashboard can be
+# tested on a public real-world dataset (report Section 3)
+UCI_COLS = ["Invoice", "StockCode", "Description", "Quantity", "InvoiceDate", "Price", "Customer ID", "Country"]
+NON_PRODUCT_CODES = {"POST", "DOT", "M", "D", "C2", "CRUK", "BANK CHARGES", "AMAZONFEE", "S", "B", "PADS",
+                     "ADJUST", "ADJUST2", "TEST001", "TEST002", "SP1002"}
 REQUIRED_COLS = ["invoice_no", "invoice_type", "date", "time", "customer_id", "customer_type",
                  "product_id", "product_name", "category", "quantity", "unit_price_rm",
                  "discount_rm", "line_total_rm", "payment_method", "return_reason"]
 
 
+def _read_upload(upload_bytes, file_name):
+    if file_name.lower().endswith((".xlsx", ".xls")):
+        sheets = pd.read_excel(BytesIO(upload_bytes), sheet_name=None, dtype={"Customer ID": "string",
+                                                                              "StockCode": "string"})
+        return pd.concat(sheets.values(), ignore_index=True)
+    return pd.read_csv(BytesIO(upload_bytes), dtype={"customer_id": "string", "Customer ID": "string",
+                                                     "StockCode": "string"}, encoding_errors="replace")
+
+
+def _from_online_retail(raw, log):
+    """Map UCI Online Retail II columns to the dashboard's transaction format."""
+    n = len(raw)
+    raw = raw[~raw.StockCode.astype(str).str.upper().isin(NON_PRODUCT_CODES)]
+    log.append(("Removed non-product lines (postage, fees, manual adjustments)", n - len(raw), "drop"))
+    dt = pd.to_datetime(raw.InvoiceDate, errors="coerce")
+    cid = raw["Customer ID"].astype("string").str.replace(r"\.0$", "", regex=True)
+    ret = raw.Invoice.astype(str).str.startswith("C")
+    tx = pd.DataFrame({
+        "invoice_no": raw.Invoice.astype(str),
+        "invoice_type": np.where(ret, "Return", "Sale"),
+        "date": dt.dt.strftime("%Y-%m-%d"), "time": dt.dt.strftime("%H:%M:%S"),
+        "customer_id": cid,
+        "customer_type": np.where(cid.isna(), "Walk-in", "Member"),
+        "product_id": raw.StockCode.astype(str).str.upper(),
+        "product_name": raw.Description.astype("string").str.strip(),
+        "category": "Uncategorised", "quantity": raw.Quantity,
+        "unit_price_rm": raw.Price, "discount_rm": 0.0, "line_total_rm": (raw.Quantity * raw.Price).round(2),
+        "payment_method": "Not recorded", "return_reason": np.where(ret, "Not recorded", None),
+        "country": raw.Country,
+    })
+    # master tables are not in this file: build what can be derived, leave the rest empty
+    products = (tx.dropna(subset=["product_name"]).groupby("product_id").product_name.agg(lambda x: x.mode().iat[0])
+                .reset_index().assign(category="Uncategorised", cost_price_rm=np.nan, lead_time_days=np.nan,
+                                      supplier=None))
+    m = tx.dropna(subset=["customer_id"])
+    customers = (m.groupby("customer_id").agg(area=("country", lambda x: x.mode().iat[0]),
+                                              join_date=("date", "min")).reset_index()
+                 .assign(segment="Customer", join_date=lambda d: pd.to_datetime(d.join_date)))
+    return tx.drop(columns="country"), products, customers
+
+
 @st.cache_data(show_spinner="Loading and cleaning data...")
-def load(upload_bytes: bytes | None = None):
+def load(upload_bytes: bytes | None = None, file_name: str = ""):
     """Return a dict of cleaned tables plus a cleaning log."""
     products = pd.read_csv(DATA / "products.csv")
     customers = pd.read_csv(DATA / "customers.csv", parse_dates=["join_date"])
     inventory = pd.read_csv(DATA / "inventory.csv")
     calendar = pd.read_csv(DATA / "calendar_events.csv", parse_dates=["start_date", "end_date"])
+    source, currency, full = SAMPLE_SOURCE, "RM", True
 
-    raw = pd.read_csv(BytesIO(upload_bytes) if upload_bytes else DATA / "transactions.csv",
-                      dtype={"customer_id": "string"})
+    raw = _read_upload(upload_bytes, file_name) if upload_bytes else pd.read_csv(
+        DATA / "transactions.csv", dtype={"customer_id": "string"})
+    log = [("Raw rows loaded", len(raw), "")]
+    if upload_bytes and all(c in raw.columns for c in UCI_COLS):
+        raw, products, customers = _from_online_retail(raw, log)
+        inventory = pd.DataFrame(columns=["product_id", "stock_on_hand"])
+        calendar = calendar.iloc[0:0]
+        source, currency, full = f"Data: UCI Online Retail II ({file_name})", "£", False
+    elif upload_bytes:
+        source = f"Data: uploaded file ({file_name})"
     missing = [c for c in REQUIRED_COLS if c not in raw.columns]
     if missing:
         raise ValueError(f"Uploaded file is missing columns: {', '.join(missing)}")
 
-    log = [("Raw rows loaded", len(raw), "")]
     tx = raw.copy()
 
     n = len(tx)
     tx = tx.drop_duplicates()
-    log.append(("Removed exact duplicate rows (POS double scans)", n - len(tx), "drop"))
+    log.append(("Removed exact duplicate rows", n - len(tx), "drop"))
 
     n = len(tx)
     test = tx.invoice_no.astype(str).str.startswith("TEST") | (tx.unit_price_rm <= 0)
     tx = tx[~test]
-    log.append(("Removed cashier test scans / RM0 lines", n - len(tx), "drop"))
+    log.append(("Removed test scans / zero or negative price lines", n - len(tx), "drop"))
 
     name_map = products.set_index("product_id").product_name
     blank = tx.product_name.isna() | (tx.product_name.astype(str).str.strip() == "")
@@ -65,7 +121,7 @@ def load(upload_bytes: bytes | None = None):
     log.append(("Return lines (kept in a separate table)", len(returns), "result"))
 
     return dict(sales=sales, returns=returns, products=products, customers=customers,
-                inventory=inventory, calendar=calendar,
+                inventory=inventory, calendar=calendar, source=source, currency=currency, full=full,
                 log=pd.DataFrame(log, columns=["Step", "Rows", "Type"]))
 
 

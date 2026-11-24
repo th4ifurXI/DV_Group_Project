@@ -1,28 +1,36 @@
 """
-Mini Market Seri Iskandar (simulated) - Sales & Inventory Dashboard
+WData - Sales & Inventory Dashboard for an anonymised mini-market in Perak
 Run:  streamlit run app.py
 """
 
 import pandas as pd
 import streamlit as st
 
+from core import style
 from core.data import load
 from views import about, customers, geography, inventory, overview, products, returns, seasonality
 
-st.set_page_config(page_title="Mini Market Seri Iskandar (simulated)", page_icon="🛒", layout="wide")
+st.set_page_config(page_title="WData - Sales & Inventory Dashboard", page_icon="🛒", layout="wide")
 
 # ---------------- data ----------------
 with st.sidebar:
-    st.markdown("### 🛒 Mini Market Seri Iskandar")
-    st.caption("Sales & Inventory Dashboard · simulated data")
+    st.markdown("### 🛒 WData")
+    head = st.empty()
     with st.expander("Use your own POS export"):
-        up = st.file_uploader("transactions.csv (same columns as the sample)", type="csv")
+        up = st.file_uploader("transactions.csv (same columns as the sample) or UCI Online Retail II "
+                              "(.csv / .xlsx)", type=["csv", "xlsx"])
 
 try:
-    D = load(up.getvalue() if up else None)
+    D = load(up.getvalue(), up.name) if up else load(None)
 except ValueError as e:
     st.sidebar.error(str(e))
     D = load(None)
+style.set_source(D["source"], D["currency"])
+sample = D["source"] == style.SAMPLE_SOURCE
+head.caption("Sales & Inventory Dashboard" + (" · Mini-market, Perak" if sample else ""))
+if up and not D["full"]:
+    st.sidebar.info("Uploaded file has no cost, stock or category data: margin, inventory and map views are "
+                    "switched off.")
 
 sales = D["sales"]
 dmin, dmax = sales.date.min().date(), sales.date.max().date()
@@ -59,5 +67,6 @@ pages = [
     st.Page(inventory.render, title="Inventory Alerts", icon="🚨", url_path="inventory"),
     st.Page(about.render, title="About the Data", icon="ℹ️", url_path="about"),
 ]
-st.caption("🛒 MINI MARKET SERI ISKANDAR (SIMULATED) · SALES & INVENTORY DASHBOARD")
+st.caption("🛒 WDATA · SALES & INVENTORY DASHBOARD · " +
+           ("ANONYMISED MINI-MARKET, PERAK" if sample else f"UPLOADED FILE: {up.name.upper()}"))
 st.navigation(pages, position="sidebar").run()

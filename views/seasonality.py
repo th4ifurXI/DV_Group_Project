@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from core import style
 from core.data import filter_frame
 from core.style import (CONTEXT, EVENT_TINT, HIGHLIGHT, PRIMARY, SEQ, SERIES, add_event_bands, highlight_colours,
                         insight, money_axis, plot, rm_short)
@@ -42,14 +43,15 @@ def render():
                     title="Average transactions per hour (darker = busier; outlined = busiest slot)")
     fig.update_traces(hovertemplate="%{y} %{x}:00<br>%{z:.1f} transactions on average<extra></extra>")
     cols = list(h.columns)
-    xi, yi = cols.index(peak[1]), DAYS.index(peak[0])
+    yi = DAYS.index(peak[0])
     fig.add_shape(type="rect", x0=peak[1] - 0.5, x1=peak[1] + 0.5, y0=yi - 0.5, y1=yi + 0.5,
                   line=dict(color=HIGHLIGHT, width=3))
     fig.update_layout(height=400, coloraxis_showscale=False)
     fig.update_xaxes(tickvals=cols, ticktext=[f"{x}:00" for x in cols])
     plot(fig)
+    part = lambda hr: "morning" if hr < 12 else ("afternoon" if hr < 17 else "evening")
     insight(f"Busiest slot: <b>{peak[0]} {peak[1]}:00</b>. Quietest: {quiet[0]} {quiet[1]}:00. "
-            "Roster an extra cashier for the evening peak and restock in the quiet morning slots.")
+            f"Roster an extra cashier for the {part(peak[1])} peak and restock during the quietest hours.")
 
     daily = s.groupby("date").line_total_rm.sum().reset_index()
     daily["7-day average"] = daily.line_total_rm.rolling(7, min_periods=1).mean()
@@ -61,8 +63,18 @@ def render():
     add_event_bands(fig, cal, F["start"], F["end"])
     add_event_bands(fig, cal.assign(event=""), F["start"], F["end"], types=("Semester break",), min_days=1)
     plot(fig)
-    st.caption("Shaded bands: festive seasons (Ramadan labelled) and UTP semester breaks (unlabelled).")
+    if not cal.empty:
+        st.caption("Shaded bands: festive seasons (Ramadan labelled) and UTP semester breaks (unlabelled).")
 
+    if cal.empty:
+        st.info("No festive or term-break calendar for this file, so the period comparison is hidden.")
+    else:
+        _periods(s, daily, cal)
+    if s.category.nunique() > 1:
+        _small_multiples(s, cal, F)
+
+
+def _periods(s, daily, cal):
     # period comparison + Ramadan category change
     daily["period"] = "Normal day"
     daily.loc[in_events(daily.date, cal, etype="Semester break"), "period"] = "UTP semester break"
@@ -109,6 +121,9 @@ def render():
     if msg:
         insight(msg)
 
+
+
+def _small_multiples(s, cal, F):
     # L2 #9 / L5 trellis: small multiples on one shared scale
     st.subheader("Monthly revenue by category (small multiples)")
     mc = s.pivot_table(index="month", columns="category", values="line_total_rm", aggfunc="sum").fillna(0)
@@ -121,7 +136,7 @@ def render():
     fig.update_traces(line_color=PRIMARY, line_width=1.8,
                       hovertemplate="%{x|%b %Y}<br>RM%{y:,.0f}<extra></extra>")
     fig.for_each_annotation(lambda an: an.update(text=an.text.split("=")[-1], font=dict(size=12)))
-    fig.update_yaxes(tickprefix="RM", tickformat="~s", title_text="")
+    fig.update_yaxes(tickprefix=style.CUR, tickformat="~s", title_text="")
     fig.update_xaxes(tickformat="%b %y", nticks=4, title_text="")
     for _, e in cal[cal.event == "Ramadan"].iterrows():
         if e.end_date >= F["start"] and e.start_date <= F["end"]:

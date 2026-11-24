@@ -27,8 +27,16 @@ CONTEXT = "#9ec5f4"        # light blue: everything that is context
 HIGHLIGHT = SERIES[1]      # orange: the one thing to look at (pre-attentive colour)
 EVENT_TINT = "rgba(235,104,52,0.10)"
 
-ATTRIBUTION = ("Source: simulated POS data, Mini Market Seri Iskandar, Jan 2025 - Oct 2026 "
-               "· Chart: TEB3133 Data Visualization group")
+SAMPLE_SOURCE = "Data: anonymised mini-market, Perak, Jan 2025 - Oct 2026"
+ATTRIBUTION = f"{SAMPLE_SOURCE} · Chart: WData (TEB3133)"
+CUR = "RM"   # currency symbol; switched by set_source() when a file in another currency is uploaded
+
+
+def set_source(source, currency="RM"):
+    """Set the attribution line and currency used by every chart (L2 #10)."""
+    global ATTRIBUTION, CUR
+    ATTRIBUTION = f"{source} · Chart: WData (TEB3133)"
+    CUR = currency
 
 pio.templates["shop"] = go.layout.Template(layout=dict(
     font=dict(family="system-ui, -apple-system, Segoe UI, sans-serif", size=13, color=INK_2),
@@ -54,20 +62,31 @@ STATUS_COLOUR = {"Reorder now": CRITICAL, "Reorder soon": SERIOUS, "OK": AXIS,
 
 
 def rm(x, decimals=0):
-    return f"RM{x:,.{decimals}f}"
+    if x != x:
+        return "n/a"
+    return f"{CUR}{x:,.{decimals}f}"
+
+
+def money_fmt():
+    """Number format for money columns in st.dataframe."""
+    return f"{CUR} %.2f"
 
 
 def rm_short(x):
     """Compact money using the highest denomination: RM2.88M, RM597k."""
+    if x != x:
+        return "n/a"
     if abs(x) >= 1e6:
-        return f"RM{x / 1e6:.2f}M"
+        return f"{CUR}{x / 1e6:.2f}M"
     if abs(x) >= 1e4:
-        return f"RM{x / 1e3:.0f}k"
-    return f"RM{x:,.0f}"
+        return f"{CUR}{x / 1e3:.0f}k"
+    if abs(x) < 100:
+        return f"{CUR}{x:,.2f}"
+    return f"{CUR}{x:,.0f}"
 
 
 def pct_delta(now, before):
-    if before in (0, None) or before != before:
+    if before in (0, None) or before != before or now != now:
         return None
     return f"{(now - before) / before:+.1%}"
 
@@ -82,6 +101,9 @@ def insight(text, where=st):
 def plot(fig, where=st, **kw):
     """Draw a chart with the attribution line under it (L2 #10). Returns the selection event if any."""
     fig.update_traces(marker_cornerradius=4, selector=dict(type="bar"))
+    if CUR != "RM":  # hover text is written with RM; swap in the uploaded file's currency
+        fig.for_each_trace(lambda t: t.update(hovertemplate=t.hovertemplate.replace("RM", CUR))
+                           if t.hovertemplate else None)
     ev = where.plotly_chart(fig, width="stretch", config={"displaylogo": False}, **kw)
     where.caption(ATTRIBUTION)
     return ev
@@ -94,8 +116,11 @@ def highlight_colours(labels, chosen):
 
 
 def money_axis(fig, axis="x"):
-    """RM prefix and k / M suffix on a money axis (L2 #5)."""
-    fig.update_layout(**{f"{axis}axis": dict(tickprefix="RM", tickformat="~s")})
+    """Currency prefix and k / M suffix on a money axis (L2 #5)."""
+    vals = [v for t in fig.data for v in (getattr(t, axis) if getattr(t, axis) is not None else [])
+            if isinstance(v, (int, float))]
+    small = bool(vals) and max(abs(v) for v in vals) < 1000   # "~s" would print 500m for 0.5
+    fig.update_layout(**{f"{axis}axis": dict(tickprefix=CUR, tickformat=",.2~f" if small else "~s")})
     return fig
 
 
