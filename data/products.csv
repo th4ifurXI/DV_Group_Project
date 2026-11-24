@@ -1,41 +1,41 @@
 product_id,product_name,category,brand,unit,selling_price_rm,cost_price_rm,supplier,lead_time_days
-P001,Beras Wangi 5kg,Rice & Grains,Jasmine,bag,21.9,19.76,Kinta Dry Goods Distributor,5
-P002,Beras Super Tempatan 10kg,Rice & Grains,Faiza,bag,26.0,24.12,Kinta Dry Goods Distributor,5
+P001,Beras Wangi 5kg,Rice & Grains,Jasmine,bag,17.25,15.56,Kinta Dry Goods Distributor,5
+P002,Beras Super Tempatan 10kg,Rice & Grains,Jati,bag,26.0,24.12,Kinta Dry Goods Distributor,5
 P003,Beras Basmathi 1kg,Rice & Grains,Faiza,pack,9.5,8.72,Kinta Dry Goods Distributor,5
-P004,Oat Segera 500g,Rice & Grains,Quaker,pack,8.9,8.12,Kinta Dry Goods Distributor,5
-P005,Bihun 400g,Rice & Grains,Cap Rusa,pack,3.2,2.92,Kinta Dry Goods Distributor,5
-P006,Minyak Masak 5kg,Cooking Essentials,Saji,bottle,31.9,28.89,Kinta Dry Goods Distributor,5
+P004,Oat Segera 500g,Rice & Grains,Quaker,pack,5.64,5.15,Kinta Dry Goods Distributor,5
+P005,Bihun 400g,Rice & Grains,Cap Rusa,pack,2.89,2.64,Kinta Dry Goods Distributor,5
+P006,Minyak Masak 5kg,Cooking Essentials,Saji,bottle,30.9,27.98,Kinta Dry Goods Distributor,5
 P007,Minyak Masak Paket 1kg,Cooking Essentials,Seri Murni,pack,2.5,2.28,Kinta Dry Goods Distributor,5
 P008,Gula Pasir 1kg,Cooking Essentials,Prai,pack,2.85,2.49,Kinta Dry Goods Distributor,5
-P009,Tepung Gandum 1kg,Cooking Essentials,Blue Key,pack,2.7,2.43,Kinta Dry Goods Distributor,5
-P010,Garam Halus 500g,Cooking Essentials,Cap Kapal,pack,1.2,1.06,Kinta Dry Goods Distributor,5
-P011,Kicap Manis 345ml,Cooking Essentials,Kipas Udang,bottle,4.2,3.84,Kinta Dry Goods Distributor,5
-P012,Sos Cili 340g,Cooking Essentials,Life,bottle,3.9,3.56,Kinta Dry Goods Distributor,5
-P013,Serbuk Kari Daging 250g,Cooking Essentials,Baba's,pack,5.6,5.02,Kinta Dry Goods Distributor,5
-P014,Santan Kotak 200ml,Cooking Essentials,Kara,box,2.9,2.62,Kinta Dry Goods Distributor,5
-P015,Bawang Merah 1kg,Cooking Essentials,Local,kg,7.5,6.68,Kinta Dry Goods Distributor,5
-P016,Bawang Putih 500g,Cooking Essentials,Local,pack,5.2,4.72,Kinta Dry Goods Distributor,5
+P009,Tepung Gandum 1kg,Cooking Essentials,Sauh,pack,3.0,2.69,Kinta Dry Goods Distributor,5
+P010,Garam Halus 350g,Cooking Essentials,Cap Kapal,pack,0.8,0.7,Kinta Dry Goods Distributor,5
+P011,Kicap Manis 345ml,Cooking Essentials,Kipas Udang,bottle,6.25,5.72,Kinta Dry Goods Distributor,5
+P012,Sos Cili 340g,Cooking Essentials,Maggi,bottle,4.2,3.83,Kinta Dry Goods Distributor,5
+P013,Serbuk Kari Daging 250g,Cooking Essentials,Baba's,pack,5.9,5.29,Kinta Dry Goods Distributor,5
+P014,Santan Kotak 200ml,Cooking Essentials,Kara,box,3.6,3.25,Kinta Dry Goods Distributor,5
+P015,Bawang Merah 1kg,Cooking Essentials,Local,kg,5.99,5.34,Kinta Dry Goods Distributor,5
+P016,Bawang Putih 500g,Cooking Essentials,Local,pack,4.34,3.94,Kinta Dry Goods Distributor,5
 P017,Ikan Bilis 200g,Cooking Essentials,Cap Ikan,pack,8.9,7.9,Kinta Dry Goods Distributor,5
-P018,Mi Segera Kari 5x79g,Instant Food,Maggi,pack,6.8,5.59,Perak FMCG Wholesale,4
+P018,Mi Segera Kari 5x79g,Instant Food,Maggi,pack,4.99,4.1,Perak FMCG Wholesale,4
 P019,Mi Segera Ayam 5x77g,Instant Food,Maggi,pack,6.8,5.57,Perak FMCG Wholesale,4
 P020,Mi Goreng Perisa Asli 5x80g,Instant Food,Mamee Daebak,pack,9.9,8.08,Perak FMCG Wholesale,4
 P021,Mi Cawan Tom Yam,Instant Food,Cintan,cup,2.3,1.91,Perak FMCG Wholesale,4
 P022,Bubur Segera Ayam,Instant Food,Nissin,cup,2.9,2.4,Perak FMCG Wholesale,4
-P023,Sardin Tin 425g,Instant Food,Ayam Brand,can,7.9,6.62,Perak FMCG Wholesale,4
+P023,Sardin Tin 425g,Instant Food,King Cup,can,8.9,7.46,Perak FMCG Wholesale,4
 P024,Tuna Mayonis 160g,Instant Food,Ayam Brand,can,5.5,4.43,Perak FMCG Wholesale,4
 P025,Nasi Segera Rendang,Instant Food,Brahim's,pack,8.5,7.03,Perak FMCG Wholesale,4
 P026,Air Mineral 1.5L,Beverages,Spritzer,bottle,1.9,1.47,Perak FMCG Wholesale,4
 P027,Air Mineral 6x500ml,Beverages,Bleu,pack,6.2,4.75,Perak FMCG Wholesale,4
 P028,Milo Kotak 200ml,Beverages,Nestle,box,2.4,1.88,Perak FMCG Wholesale,4
-P029,Milo Serbuk 1kg,Beverages,Nestle,pack,20.9,16.24,Perak FMCG Wholesale,4
-P030,Teh 100 Uncang,Beverages,BOH,box,10.5,8.09,Perak FMCG Wholesale,4
-P031,Kopi O 3 dalam 1,Beverages,Aik Cheong,pack,11.9,9.12,Perak FMCG Wholesale,4
+P029,Milo Serbuk 900g,Beverages,Nestle,pack,19.4,15.07,Perak FMCG Wholesale,4
+P030,Teh 100 Uncang,Beverages,BOH,box,13.59,10.47,Perak FMCG Wholesale,4
+P031,Kopi 3 dalam 1 25 paket,Beverages,Nescafe,pack,13.79,10.57,Perak FMCG Wholesale,4
 P032,Nescafe Tin 240ml,Beverages,Nestle,can,2.7,2.15,Perak FMCG Wholesale,4
-P033,100 Plus 500ml,Beverages,F&N,bottle,2.8,2.22,Perak FMCG Wholesale,4
-P034,Coca-Cola 320ml,Beverages,Coca-Cola,can,2.5,1.96,Perak FMCG Wholesale,4
+P033,100 Plus 1.5L,Beverages,F&N,bottle,3.6,2.86,Perak FMCG Wholesale,4
+P034,Coca-Cola 320ml,Beverages,Coca-Cola,can,1.9,1.49,Perak FMCG Wholesale,4
 P035,Teh Bunga 500ml,Beverages,Yeo's,bottle,2.4,1.85,Perak FMCG Wholesale,4
-P036,Sirap Rose 2L,Beverages,Ros,bottle,6.9,5.53,Perak FMCG Wholesale,4
-P037,Jus Oren 1L,Beverages,Peel Fresh,box,6.5,5.09,Perak FMCG Wholesale,4
+P036,Kordial Oren 2L,Beverages,F&N,bottle,11.9,9.53,Perak FMCG Wholesale,4
+P037,Jus Oren 1L,Beverages,Peel Fresh,box,6.9,5.4,Perak FMCG Wholesale,4
 P038,Keropok Ikan 60g,Snacks & Confectionery,Twisties,pack,2.5,1.82,Perak FMCG Wholesale,4
 P039,Kerepek Ubi Pedas 150g,Snacks & Confectionery,Local,pack,3.5,2.62,Perak FMCG Wholesale,4
 P040,Biskut Krim Coklat,Snacks & Confectionery,Julie's,pack,4.9,3.54,Perak FMCG Wholesale,4
@@ -44,44 +44,44 @@ P042,Coklat Bar 35g,Snacks & Confectionery,Cadbury,bar,3.5,2.53,Perak FMCG Whole
 P043,Gula-gula Mentos,Snacks & Confectionery,Mentos,roll,1.8,1.3,Perak FMCG Wholesale,4
 P044,Kacang Goreng 100g,Snacks & Confectionery,Tong Garden,pack,4.2,3.1,Perak FMCG Wholesale,4
 P045,Wafer Coklat,Snacks & Confectionery,Tango,pack,2.2,1.58,Perak FMCG Wholesale,4
-P046,Telur Gred A 30 biji,Dairy & Eggs,Local,tray,13.5,11.61,Manjung Fresh Supply,2
-P047,Telur Gred C 10 biji,Dairy & Eggs,Local,pack,3.9,3.37,Manjung Fresh Supply,2
-P048,Susu Segar 1L,Dairy & Eggs,Dutch Lady,carton,7.9,6.67,Manjung Fresh Supply,2
-P049,Susu Pekat Manis 500g,Dairy & Eggs,F&N,can,4.3,3.75,Manjung Fresh Supply,2
-P050,Yogurt Strawberi,Dairy & Eggs,Marigold,cup,2.3,1.98,Manjung Fresh Supply,2
-P051,Mentega 250g,Dairy & Eggs,Anchor,block,11.9,10.31,Manjung Fresh Supply,2
+P046,Telur Gred A 30 biji,Dairy & Eggs,Local,tray,14.9,12.81,Manjung Fresh Supply,2
+P047,Telur Gred C 10 biji,Dairy & Eggs,Local,pack,4.33,3.74,Manjung Fresh Supply,2
+P048,Susu Segar 1L,Dairy & Eggs,Dutch Lady,carton,7.99,6.74,Manjung Fresh Supply,2
+P049,Krimer Manis Pekat 500g,Dairy & Eggs,F&N,can,3.99,3.48,Manjung Fresh Supply,2
+P050,Yogurt Strawberi 130g,Dairy & Eggs,Marigold,cup,2.9,2.5,Manjung Fresh Supply,2
+P051,Mentega 227g,Dairy & Eggs,Anchor,block,14.5,12.56,Manjung Fresh Supply,2
 P052,Keju Hiris 12 keping,Dairy & Eggs,Kraft,pack,8.9,7.6,Manjung Fresh Supply,2
 P053,Roti Putih,Bakery,Gardenia,loaf,3.9,3.18,Bakery Route Delivery,1
 P054,Roti Wholemeal,Bakery,Gardenia,loaf,4.7,3.85,Bakery Route Delivery,1
 P055,Roti Krim Pandan,Bakery,Massimo,pack,1.4,1.15,Bakery Route Delivery,1
 P056,Kek Gulung Coklat,Bakery,Twiggies,pack,1.6,1.33,Bakery Route Delivery,1
-P057,Ayam Segar 1 ekor,Fresh Produce,Local,kg,13.5,10.04,Manjung Fresh Supply,2
-P058,Sayur Sawi 500g,Fresh Produce,Cameron,pack,3.5,2.58,Manjung Fresh Supply,2
-P059,Tomato 500g,Fresh Produce,Cameron,pack,4.2,3.02,Manjung Fresh Supply,2
-P060,Cili Merah 200g,Fresh Produce,Local,pack,3.2,2.41,Manjung Fresh Supply,2
-P061,Pisang Berangan 1 sikat,Fresh Produce,Local,bunch,6.5,4.82,Manjung Fresh Supply,2
-P062,Kentang 1kg,Fresh Produce,Import,kg,5.9,4.32,Manjung Fresh Supply,2
-P063,Limau Kasturi 250g,Fresh Produce,Local,pack,2.5,1.85,Manjung Fresh Supply,2
+P057,Ayam Bersih 1kg,Fresh Produce,Local,kg,7.9,5.87,Manjung Fresh Supply,2
+P058,Sayur Sawi 500g,Fresh Produce,Cameron,pack,2.75,2.02,Manjung Fresh Supply,2
+P059,Tomato 500g,Fresh Produce,Cameron,pack,2.95,2.12,Manjung Fresh Supply,2
+P060,Cili Merah 200g,Fresh Produce,Local,pack,2.6,1.96,Manjung Fresh Supply,2
+P061,Pisang Berangan 1kg,Fresh Produce,Local,bunch,7.49,5.55,Manjung Fresh Supply,2
+P062,Kentang 1kg,Fresh Produce,Import,kg,2.69,1.97,Manjung Fresh Supply,2
+P063,Limau Kasturi 250g,Fresh Produce,Local,pack,2.0,1.48,Manjung Fresh Supply,2
 P064,Nuget Ayam 850g,Frozen Food,Ayamas,pack,15.9,12.1,Ipoh Cold Chain Trading,3
 P065,Sosej Ayam 1kg,Frozen Food,Ramly,pack,13.9,11.11,Ipoh Cold Chain Trading,3
 P066,Roti Canai Sejuk Beku 20pcs,Frozen Food,Kawan,pack,13.5,10.84,Ipoh Cold Chain Trading,3
 P067,Karipap Sejuk Beku 20pcs,Frozen Food,Figo,pack,9.9,7.52,Ipoh Cold Chain Trading,3
 P068,Ais Krim Kon,Frozen Food,Wall's,cone,3.5,2.71,Ipoh Cold Chain Trading,3
 P069,Burger Daging 6pcs,Frozen Food,Ramly,pack,9.5,7.51,Ipoh Cold Chain Trading,3
-P070,Sabun Cuci Pinggan 900ml,Household,Sunlight,bottle,6.9,5.19,Ipoh Home & Care Supplies,7
-P071,Serbuk Pencuci 2.3kg,Household,Breeze,pack,21.9,16.71,Ipoh Home & Care Supplies,7
-P072,Pelembut Fabrik 1.6L,Household,Downy,pack,15.9,12.02,Ipoh Home & Care Supplies,7
+P070,Sabun Cuci Pinggan 800ml,Household,Sunlight,bottle,6.2,4.66,Ipoh Home & Care Supplies,7
+P071,Serbuk Pencuci 2.1kg,Household,Breeze,pack,14.9,11.37,Ipoh Home & Care Supplies,7
+P072,Pelembut Fabrik 800ml,Household,Downy,pack,13.2,9.98,Ipoh Home & Care Supplies,7
 P073,Tisu Gulung 10 gulung,Household,Premier,pack,12.9,9.97,Ipoh Home & Care Supplies,7
 P074,Beg Sampah Besar 20pcs,Household,Glad,pack,5.9,4.61,Ipoh Home & Care Supplies,7
 P075,Ubat Nyamuk Lingkaran,Household,Ridsect,box,5.5,4.28,Ipoh Home & Care Supplies,7
 P076,Gas Tong 14kg (tukar),Household,Petronas,tank,26.6,20.36,Ipoh Home & Care Supplies,7
 P077,Bateri AA 4pcs,Household,Energizer,pack,11.9,8.86,Ipoh Home & Care Supplies,7
-P078,Syampu 340ml,Personal Care,Sunsilk,bottle,13.9,10.13,Ipoh Home & Care Supplies,7
-P079,Sabun Mandi Cecair 900ml,Personal Care,Lifebuoy,bottle,12.5,8.62,Ipoh Home & Care Supplies,7
-P080,Ubat Gigi 225g,Personal Care,Colgate,tube,7.9,5.54,Ipoh Home & Care Supplies,7
-P081,Berus Gigi 3pcs,Personal Care,Darlie,pack,9.9,6.94,Ipoh Home & Care Supplies,7
+P078,Syampu 330ml,Personal Care,Head & Shoulders,bottle,13.9,10.13,Ipoh Home & Care Supplies,7
+P079,Sabun Mandi Cecair 920ml,Personal Care,Lifebuoy,bottle,16.99,11.72,Ipoh Home & Care Supplies,7
+P080,Ubat Gigi 250g,Personal Care,Colgate,tube,13.9,9.75,Ipoh Home & Care Supplies,7
+P081,Berus Gigi,Personal Care,Colgate,pack,4.9,3.43,Ipoh Home & Care Supplies,7
 P082,Pencuci Muka 100g,Personal Care,Garnier,tube,14.9,10.69,Ipoh Home & Care Supplies,7
-P083,Deodoran Roll-On,Personal Care,Nivea,bottle,11.9,8.44,Ipoh Home & Care Supplies,7
+P083,Deodoran Roll-On 50ml,Personal Care,Rexona,bottle,10.9,7.73,Ipoh Home & Care Supplies,7
 P084,Tuala Wanita 16pcs,Personal Care,Kotex,pack,8.9,6.16,Ipoh Home & Care Supplies,7
 P085,Pelitup Muka 50pcs,Personal Care,Medicos,box,9.9,6.82,Ipoh Home & Care Supplies,7
 P086,Pen Biru 3pcs,Stationery & Student,Faber-Castell,pack,4.5,2.9,Seri Iskandar Stationery Hub,6

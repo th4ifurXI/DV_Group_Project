@@ -8,6 +8,10 @@ Malaysian mini-market decide what to stock, who to retain and when to reorder.
 > Ramadan, Hari Raya and Chinese New Year). The column structure follows common public retail datasets
 > (Kaggle *Supermarket Sales*, UCI *Online Retail II*), so any shop can upload its own POS export in the same
 > format from the sidebar. The public **UCI Online Retail II** file (.csv or .xlsx) can also be uploaded as-is.
+>
+> **Prices:** shelf prices for 45 of the 99 products are real **KPDN PriceCatcher** prices - the November 2026 median
+> across 196 mini-markets, grocery shops and supermarkets in Perak (`data/reference/pricecatcher_perak_2026-11.csv`,
+> built by `data_generation/pricecatcher_prices.py` from the open data at open.dosm.gov.my).
 
 ## Run it
 
@@ -54,6 +58,7 @@ core/style.py                 chart palette and Plotly template
 views/*.py                    one file per dashboard page
 data/                         transactions, products, customers, inventory, calendar events
 data_generation/generate_dataset.py   builds the CSV files in data/
+data_generation/pricecatcher_prices.py   matches products to PriceCatcher prices (data/reference/)
 ```
 
 ## Dataset summary
@@ -65,6 +70,7 @@ data_generation/generate_dataset.py   builds the CSV files in data/
 | customers.csv | 2,600 | loyalty members: shopper type, gender, age group, area, join date |
 | inventory.csv | 99 | stock on hand at 31 Oct 2026 |
 | calendar_events.csv | 17 | festive seasons and UTP semester breaks |
+| reference/pricecatcher_perak_2026-11.csv | 45 | PriceCatcher Perak median price for each matched product |
 
 Data-quality issues handled by the cleaning step: duplicate rows (POS double scans), cashier test scans at RM0,
 blank product names, walk-in customers with no ID, and returns with negative quantities.

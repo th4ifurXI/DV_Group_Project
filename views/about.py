@@ -1,3 +1,6 @@
+from pathlib import Path
+
+import pandas as pd
 import streamlit as st
 
 from core.style import SAMPLE_SOURCE
@@ -11,7 +14,9 @@ def render():
             "**About this dataset.** The dashboard is built around an anonymised neighbourhood mini-market in "
             "Perak, covering 1 Jan 2025 to 31 Oct 2026: Malaysian products with prices in RM, local payment "
             "methods, loyalty members (UTP students, residents and staff), the UTP semester calendar and "
-            "Malaysian festive seasons. Any shop can upload its own POS export with the same columns from the "
+            "Malaysian festive seasons. Shelf prices for 45 of the 99 products are real KPDN PriceCatcher prices: "
+            "the November 2026 median across 196 mini-markets, grocery shops and supermarkets in Perak. "
+            "Any shop can upload its own POS export with the same columns from the "
             "sidebar, and the UCI Online Retail II file is also accepted as-is.")
     else:
         st.info(f"**Showing an uploaded file.** {D['source']}. Views that need cost prices, stock counts, "
@@ -67,6 +72,12 @@ def render():
     st.markdown("Other tables: **products.csv** (cost price, supplier, lead time), **customers.csv** "
                 "(shopper type, area, join date), **inventory.csv** (stock on hand at the last count), "
                 "**calendar_events.csv** (festive seasons and UTP breaks).")
+    ref = Path(__file__).resolve().parents[1] / "data" / "reference" / "pricecatcher_perak_2026-11.csv"
+    if ref.exists():
+        with st.expander("Price reference: KPDN PriceCatcher, Perak, November 2026"):
+            st.caption("Median price per item across Perak mini-markets, grocery shops and supermarkets, converted to "
+                       "the shop's pack size. Source: open.dosm.gov.my/data-catalogue/pricecatcher")
+            st.dataframe(pd.read_csv(ref), hide_index=True, width="stretch")
     for name in ["products", "customers", "inventory", "calendar"]:
         with st.expander(f"Preview: {name}"):
             st.dataframe(D[name].head(20), hide_index=True, width="stretch")

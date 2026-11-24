@@ -35,7 +35,7 @@ rng = np.random.default_rng(SEED)
 CATALOGUE = {
     "Rice & Grains": [
         ("Beras Wangi 5kg", "Jasmine", "bag", 21.90, 6, 0.0, 1, ""),
-        ("Beras Super Tempatan 10kg", "Faiza", "bag", 26.00, 4, 0.0, 1, ""),
+        ("Beras Super Tempatan 10kg", "Jati", "bag", 26.00, 4, 0.0, 1, ""),
         ("Beras Basmathi 1kg", "Faiza", "pack", 9.50, 1.5, 0.0, 1, ""),
         ("Oat Segera 500g", "Quaker", "pack", 8.90, 2, 0.0, 1, ""),
         ("Bihun 400g", "Cap Rusa", "pack", 3.20, 2.5, 0.3, 1, ""),
@@ -44,10 +44,10 @@ CATALOGUE = {
         ("Minyak Masak 5kg", "Saji", "bottle", 31.90, 3.5, 0.0, 1, ""),
         ("Minyak Masak Paket 1kg", "Seri Murni", "pack", 2.50, 4, 0.5, 1, ""),
         ("Gula Pasir 1kg", "Prai", "pack", 2.85, 6, 0.3, 1, ""),
-        ("Tepung Gandum 1kg", "Blue Key", "pack", 2.70, 4, 0.3, 1, ""),
-        ("Garam Halus 500g", "Cap Kapal", "pack", 1.20, 2, 0.0, 1, ""),
+        ("Tepung Gandum 1kg", "Sauh", "pack", 2.70, 4, 0.3, 1, ""),
+        ("Garam Halus 350g", "Cap Kapal", "pack", 1.20, 2, 0.0, 1, ""),
         ("Kicap Manis 345ml", "Kipas Udang", "bottle", 4.20, 3.5, 0.1, 1, ""),
-        ("Sos Cili 340g", "Life", "bottle", 3.90, 3, 0.1, 1, ""),
+        ("Sos Cili 340g", "Maggi", "bottle", 3.90, 3, 0.1, 1, ""),
         ("Serbuk Kari Daging 250g", "Baba's", "pack", 5.60, 2.5, 0.0, 1, ""),
         ("Santan Kotak 200ml", "Kara", "box", 2.90, 3, 0.6, 1, "raya"),
         ("Bawang Merah 1kg", "Local", "kg", 7.50, 3.5, 0.0, 2, ""),
@@ -60,7 +60,7 @@ CATALOGUE = {
         ("Mi Goreng Perisa Asli 5x80g", "Mamee Daebak", "pack", 9.90, 4, 0.3, 1, ""),
         ("Mi Cawan Tom Yam", "Cintan", "cup", 2.30, 5, 0.8, 1, ""),
         ("Bubur Segera Ayam", "Nissin", "cup", 2.90, 1.5, 0.3, 1, ""),
-        ("Sardin Tin 425g", "Ayam Brand", "can", 7.90, 3, 0.2, 1, ""),
+        ("Sardin Tin 425g", "King Cup", "can", 7.90, 3, 0.2, 1, ""),
         ("Tuna Mayonis 160g", "Ayam Brand", "can", 5.50, 2.5, 0.2, 1, ""),
         ("Nasi Segera Rendang", "Brahim's", "pack", 8.50, 1.5, 0.1, 1, ""),
     ],
@@ -68,14 +68,14 @@ CATALOGUE = {
         ("Air Mineral 1.5L", "Spritzer", "bottle", 1.90, 8, 0.8, 1, ""),
         ("Air Mineral 6x500ml", "Bleu", "pack", 6.20, 3, 0.1, 1, ""),
         ("Milo Kotak 200ml", "Nestle", "box", 2.40, 6, 0.8, 1, ""),
-        ("Milo Serbuk 1kg", "Nestle", "pack", 20.90, 2.5, 0.0, 1, ""),
+        ("Milo Serbuk 900g", "Nestle", "pack", 20.90, 2.5, 0.0, 1, ""),
         ("Teh 100 Uncang", "BOH", "box", 10.50, 2.5, 0.0, 1, ""),
-        ("Kopi O 3 dalam 1", "Aik Cheong", "pack", 11.90, 2.5, 0.0, 1, ""),
+        ("Kopi 3 dalam 1 25 paket", "Nescafe", "pack", 11.90, 2.5, 0.0, 1, ""),
         ("Nescafe Tin 240ml", "Nestle", "can", 2.70, 4, 0.6, 1, ""),
-        ("100 Plus 500ml", "F&N", "bottle", 2.80, 5, 0.6, 1, ""),
+        ("100 Plus 1.5L", "F&N", "bottle", 2.80, 5, 0.6, 1, ""),
         ("Coca-Cola 320ml", "Coca-Cola", "can", 2.50, 4, 0.6, 1, ""),
         ("Teh Bunga 500ml", "Yeo's", "bottle", 2.40, 2.5, 0.4, 1, ""),
-        ("Sirap Rose 2L", "Ros", "bottle", 6.90, 1.5, 0.1, 1, "raya"),
+        ("Kordial Oren 2L", "F&N", "bottle", 6.90, 1.5, 0.1, 1, "raya"),
         ("Jus Oren 1L", "Peel Fresh", "box", 6.50, 2, 0.1, 2, ""),
     ],
     "Snacks & Confectionery": [
@@ -92,9 +92,9 @@ CATALOGUE = {
         ("Telur Gred A 30 biji", "Local", "tray", 13.50, 5, 0.0, 3, ""),
         ("Telur Gred C 10 biji", "Local", "pack", 3.90, 4, 0.1, 3, ""),
         ("Susu Segar 1L", "Dutch Lady", "carton", 7.90, 3, 0.1, 4, ""),
-        ("Susu Pekat Manis 500g", "F&N", "can", 4.30, 3, 0.2, 1, ""),
-        ("Yogurt Strawberi", "Marigold", "cup", 2.30, 2, 0.4, 4, ""),
-        ("Mentega 250g", "Anchor", "block", 11.90, 1.2, 0.0, 3, "raya"),
+        ("Krimer Manis Pekat 500g", "F&N", "can", 4.30, 3, 0.2, 1, ""),
+        ("Yogurt Strawberi 130g", "Marigold", "cup", 2.30, 2, 0.4, 4, ""),
+        ("Mentega 227g", "Anchor", "block", 11.90, 1.2, 0.0, 3, "raya"),
         ("Keju Hiris 12 keping", "Kraft", "pack", 8.90, 1.2, 0.0, 3, ""),
     ],
     "Bakery": [
@@ -104,11 +104,11 @@ CATALOGUE = {
         ("Kek Gulung Coklat", "Twiggies", "pack", 1.60, 3, 0.4, 5, ""),
     ],
     "Fresh Produce": [
-        ("Ayam Segar 1 ekor", "Local", "kg", 13.50, 3, 0.0, 3, ""),
+        ("Ayam Bersih 1kg", "Local", "kg", 13.50, 3, 0.0, 3, ""),
         ("Sayur Sawi 500g", "Cameron", "pack", 3.50, 3, 0.1, 4, ""),
         ("Tomato 500g", "Cameron", "pack", 4.20, 2.5, 0.0, 4, ""),
         ("Cili Merah 200g", "Local", "pack", 3.20, 2.5, 0.0, 4, ""),
-        ("Pisang Berangan 1 sikat", "Local", "bunch", 6.50, 2.5, 0.0, 4, ""),
+        ("Pisang Berangan 1kg", "Local", "bunch", 6.50, 2.5, 0.0, 4, ""),
         ("Kentang 1kg", "Import", "kg", 5.90, 2.5, 0.0, 3, ""),
         ("Limau Kasturi 250g", "Local", "pack", 2.50, 1.5, 0.0, 4, ""),
     ],
@@ -121,9 +121,9 @@ CATALOGUE = {
         ("Burger Daging 6pcs", "Ramly", "pack", 9.50, 1.5, 0.0, 2, ""),
     ],
     "Household": [
-        ("Sabun Cuci Pinggan 900ml", "Sunlight", "bottle", 6.90, 3, 0.0, 1, ""),
-        ("Serbuk Pencuci 2.3kg", "Breeze", "pack", 21.90, 1.8, 0.0, 1, ""),
-        ("Pelembut Fabrik 1.6L", "Downy", "pack", 15.90, 1.5, 0.0, 1, ""),
+        ("Sabun Cuci Pinggan 800ml", "Sunlight", "bottle", 6.90, 3, 0.0, 1, ""),
+        ("Serbuk Pencuci 2.1kg", "Breeze", "pack", 21.90, 1.8, 0.0, 1, ""),
+        ("Pelembut Fabrik 800ml", "Downy", "pack", 15.90, 1.5, 0.0, 1, ""),
         ("Tisu Gulung 10 gulung", "Premier", "pack", 12.90, 2.5, 0.0, 1, ""),
         ("Beg Sampah Besar 20pcs", "Glad", "pack", 5.90, 2, 0.0, 1, ""),
         ("Ubat Nyamuk Lingkaran", "Ridsect", "box", 5.50, 2, 0.0, 1, ""),
@@ -131,12 +131,12 @@ CATALOGUE = {
         ("Bateri AA 4pcs", "Energizer", "pack", 11.90, 1, 0.0, 2, ""),
     ],
     "Personal Care": [
-        ("Syampu 340ml", "Sunsilk", "bottle", 13.90, 1.5, 0.0, 1, ""),
-        ("Sabun Mandi Cecair 900ml", "Lifebuoy", "bottle", 12.50, 1.8, 0.0, 1, ""),
-        ("Ubat Gigi 225g", "Colgate", "tube", 7.90, 2, 0.0, 1, ""),
-        ("Berus Gigi 3pcs", "Darlie", "pack", 9.90, 1, 0.0, 1, ""),
+        ("Syampu 330ml", "Head & Shoulders", "bottle", 13.90, 1.5, 0.0, 1, ""),
+        ("Sabun Mandi Cecair 920ml", "Lifebuoy", "bottle", 12.50, 1.8, 0.0, 1, ""),
+        ("Ubat Gigi 250g", "Colgate", "tube", 7.90, 2, 0.0, 1, ""),
+        ("Berus Gigi", "Colgate", "pack", 9.90, 1, 0.0, 1, ""),
         ("Pencuci Muka 100g", "Garnier", "tube", 14.90, 1.2, 0.0, 2, ""),
-        ("Deodoran Roll-On", "Nivea", "bottle", 11.90, 1.2, 0.0, 1, ""),
+        ("Deodoran Roll-On 50ml", "Rexona", "bottle", 11.90, 1.2, 0.0, 1, ""),
         ("Tuala Wanita 16pcs", "Kotex", "pack", 8.90, 1.5, 0.0, 1, ""),
         ("Pelitup Muka 50pcs", "Medicos", "box", 9.90, 0.8, 0.0, 1, ""),
     ],
@@ -182,10 +182,17 @@ SUPPLIER = {  # fictional suppliers, lead time in days
     "Festive & Seasonal": ("Ipoh Festive Trading", 10),
 }
 
+# Current (2026) shelf prices: real KPDN PriceCatcher medians for Perak mini-markets where the item is
+# covered (see pricecatcher_prices.py); other products keep their listed price.
+REF = pd.read_csv(OUT / "reference" / "pricecatcher_perak_2026-11.csv").set_index("product_name").shop_price_rm
+missing = set(REF.index) - {i[0] for items in CATALOGUE.values() for i in items}
+assert not missing, f"PriceCatcher reference names not in catalogue: {missing}"
+
 rows = []
 pid = 1
 for cat, items in CATALOGUE.items():
     for name, brand, unit, price, pop, xq, rr, tag in items:
+        price = float(REF.get(name, price))
         rows.append(dict(
             product_id=f"P{pid:03d}", product_name=name, category=cat, brand=brand,
             unit=unit, selling_price_rm=price,
@@ -419,7 +426,7 @@ for d in days:
         line_prod[m] = out
 
     qty = 1 + rng.poisson(xq[line_prod])
-    price_now = prices[line_prod] * (1.035 if d.year == 2026 else 1.0)  # 2026 price increase
+    price_now = prices[line_prod] / (1.035 if d.year == 2025 else 1.0)  # prices rose 3.5% in 2026
     price_now = np.round(price_now, 2)
 
     df = pd.DataFrame(dict(inv=line_inv, product_idx=line_prod, quantity=qty, unit_price_rm=price_now))
